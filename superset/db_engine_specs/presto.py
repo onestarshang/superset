@@ -33,8 +33,9 @@ from flask_babel import gettext as __, lazy_gettext as _
 from sqlalchemy import Column, literal_column, types
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.engine.reflection import Inspector
-from sqlalchemy.engine.result import RowProxy
-from sqlalchemy.engine.url import make_url, URL
+
+from sqlalchemy.engine.result import Row as RowProxy
+from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import ColumnClause, Select
 
@@ -726,7 +727,7 @@ class PrestoEngineSpec(BaseEngineSpec):  # pylint: disable=too-many-public-metho
     @classmethod
     def adjust_database_uri(
         cls, uri: URL, selected_schema: Optional[str] = None
-    ) -> None:
+    ) -> URL:
         database = uri.database
         if selected_schema and database:
             selected_schema = parse.quote(selected_schema, safe="")
@@ -734,7 +735,9 @@ class PrestoEngineSpec(BaseEngineSpec):  # pylint: disable=too-many-public-metho
                 database = database.split("/")[0] + "/" + selected_schema
             else:
                 database += "/" + selected_schema
-            uri.database = database
+            uri = uri.set(database=database)
+
+        return uri
 
     @classmethod
     def convert_dttm(

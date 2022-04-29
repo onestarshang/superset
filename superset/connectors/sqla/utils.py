@@ -212,6 +212,7 @@ def load_or_create_tables(  # pylint: disable=too-many-arguments
             )
             for table in tables
         ]
+
     )
     new_tables = session.query(NewTable).filter(predicate).all()
 

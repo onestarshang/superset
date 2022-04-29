@@ -196,6 +196,7 @@ class TestDatabaseModel(SupersetTestCase):
 
         assert call_args[1]["connect_args"] == {"user": "logged_in_user"}
 
+
     @mock.patch("superset.models.core.create_engine")
     def test_impersonate_user_hive(self, mocked_create_engine):
         uri = "hive://localhost"
