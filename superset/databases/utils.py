@@ -101,3 +101,4 @@ def get_table_metadata(
         "indexes": keys,
         "comment": table_comment,
     }
+

@@ -24,7 +24,7 @@ from ast import literal_eval
 from contextlib import closing
 from copy import deepcopy
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, Union
 
 import numpy
 import pandas as pd
@@ -62,6 +62,8 @@ from superset.result_set import SupersetResultSet
 from superset.utils import cache as cache_util, core as utils
 from superset.utils.memoized import memoized
 
+from superset.databases.commands.exceptions import DatabaseInvalidError
+
 config = app.config
 custom_password_store = config["SQLALCHEMY_CUSTOM_PASSWORD_STORE"]
 stats_logger = config["STATS_LOGGER"]
@@ -71,6 +73,25 @@ logger = logging.getLogger(__name__)
 
 PASSWORD_MASK = "X" * 10
 DB_CONNECTION_MUTATOR = config["DB_CONNECTION_MUTATOR"]
+
+
+def make_url_safe(raw_url: Union[str, URL]) -> URL:
+        """
+        Wrapper for SQLAlchemy's make_url(), which tends to raise too detailed of
+        errors, which inevitably find their way into server logs. ArgumentErrors
+        tend to contain usernames and passwords, which makes them non-log-friendly
+        :param raw_url:
+        :return:
+        """
+
+        if isinstance(raw_url, str):
+            url = raw_url.strip()
+            try:
+                return make_url(url)  # noqa
+            except Exception:
+                raise DatabaseInvalidError()  # pylint: disable=raise-missing-from
+        else:
+            return raw_url
 
 
 class Url(Model, AuditMixinNullable):
