@@ -300,6 +300,10 @@ yarl==1.6.3
     # via aiohttp
 zipp==3.4.1
     # via -r requirements/base.in
+clickhouse-driver==0.2.4
+clickhouse-sqlalchemy==0.2.1
+mysqlclient==2.1.1
+    # add clickhouse mysql
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
