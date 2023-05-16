@@ -39,7 +39,7 @@ class ClickHouseEngineSpec(BaseEngineSpec):  # pylint: disable=abstract-method
     engine_name = "ClickHouse"
 
     time_secondary_columns = True
-    time_groupby_inline = True
+    time_groupby_inline = False
 
     _time_grain_expressions = {
         None: "{col}",
